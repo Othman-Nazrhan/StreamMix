@@ -1,76 +1,52 @@
 import axios from 'axios';
-import { API_KEYS, API_ENDPOINTS } from './api.js';
+import { API_ENDPOINTS } from './api.js';
 
 // Content fetching service
 export const contentService = {
-  // Music
-  async fetchMusic(query = '', limit = 20) {
+  // Generic fetch method to reduce duplication
+  async _fetch(url, errorMessage) {
     try {
-      const url = `${API_ENDPOINTS.JAMENDO_TRACKS}?client_id=${API_KEYS.JAMENDO}&limit=${limit}${query ? `&search=${query}` : ''}`;
       const response = await axios.get(url);
-      return response.data.results || [];
+      return response.data;
     } catch (error) {
-      console.error('Error fetching music:', error);
+      console.error(errorMessage, error);
       return [];
     }
+  },
+
+  // Music
+  async fetchMusic(query = '', limit = 20) {
+    const url = `${API_ENDPOINTS.ITUNES_SEARCH}?term=${query || 'music'}&media=music&limit=${limit}`;
+    const data = await this._fetch(url, 'Error fetching music:');
+    return data.results || [];
   },
 
   // Videos
   async fetchVideos(query = '', limit = 20) {
-    try {
-      const url = query
-        ? `${API_ENDPOINTS.PEXELS_VIDEOS_SEARCH}?query=${query}&per_page=${limit}`
-        : `${API_ENDPOINTS.PEXELS_VIDEOS_POPULAR}?per_page=${limit}`;
-      const response = await axios.get(url, {
-        headers: { Authorization: API_KEYS.PEXELS }
-      });
-      return response.data.videos || [];
-    } catch (error) {
-      console.error('Error fetching videos:', error);
-      return [];
-    }
+    const url = `${API_ENDPOINTS.ITUNES_SEARCH}?term=${query || 'musicVideo'}&media=musicVideo&limit=${limit}`;
+    const data = await this._fetch(url, 'Error fetching videos:');
+    return data.results || [];
   },
 
   // Radio
   async fetchRadioStations(query = '', limit = 20) {
-    try {
-      const url = query
-        ? `${API_ENDPOINTS.RADIO_BROWSER}search?name=${query}&limit=${limit}`
-        : `${API_ENDPOINTS.RADIO_BROWSER}topvote/${limit}`;
-      const response = await axios.get(url);
-      return response.data || [];
-    } catch (error) {
-      console.error('Error fetching radio stations:', error);
-      return [];
-    }
+    const url = query
+      ? `${API_ENDPOINTS.RADIO_BROWSER}search?name=${query}&limit=${limit}`
+      : `${API_ENDPOINTS.RADIO_BROWSER}topvote/${limit}`;
+    return await this._fetch(url, 'Error fetching radio stations:') || [];
   },
 
   // Podcasts
   async fetchPodcasts(query = '', limit = 20) {
-    try {
-      const url = `${API_ENDPOINTS.PODCAST_INDEX}?q=${query || 'popular'}&max=${limit}`;
-      const response = await axios.get(url);
-      return response.data.feeds || [];
-    } catch (error) {
-      console.error('Error fetching podcasts:', error);
-      return [];
-    }
+    const url = `${API_ENDPOINTS.ITUNES_SEARCH}?term=${query || 'podcast'}&media=podcast&limit=${limit}`;
+    const data = await this._fetch(url, 'Error fetching podcasts:');
+    return data.results || [];
   },
 
   // Images
   async fetchImages(query = '', limit = 20) {
-    try {
-      const url = query
-        ? `${API_ENDPOINTS.UNSPLASH_SEARCH}?query=${query}&per_page=${limit}`
-        : `${API_ENDPOINTS.UNSPLASH_PHOTOS}?count=${limit}`;
-      const response = await axios.get(url, {
-        headers: { Authorization: `Client-ID ${API_KEYS.UNSPLASH}` }
-      });
-      return query ? response.data.results : response.data;
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      return [];
-    }
+    const url = `${API_ENDPOINTS.PICSUM_PHOTOS}?page=1&limit=${limit}`;
+    return await this._fetch(url, 'Error fetching images:') || [];
   },
 
   // Mixed content for home page

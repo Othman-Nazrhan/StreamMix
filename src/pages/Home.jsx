@@ -29,7 +29,7 @@ const Home = () => {
   };
 
   const displayContent = searchResults ? Object.entries(searchResults).flatMap(([type, items]) =>
-    items.map(item => ({ ...item, type }))
+    items.map((item, index) => ({ ...item, type, uniqueKey: `${type}-${item.id || item.stationuuid || index}` }))
   ) : content;
 
   return (

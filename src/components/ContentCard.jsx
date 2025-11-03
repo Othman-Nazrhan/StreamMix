@@ -5,19 +5,20 @@ const ContentCard = ({ item, type, onPlay }) => {
   const { toggleFavorite, isFavorite } = useFavoritesContext();
 
   const getImage = () => {
+    const fallback = '/placeholder.jpg';
     switch (type) {
       case 'music':
-        return item.album_image || item.image || '/placeholder-music.jpg';
+        return item.album_image || item.image || fallback;
       case 'video':
-        return item.image || item.thumbnail || '/placeholder-video.jpg';
+        return item.image || item.thumbnail || fallback;
       case 'radio':
-        return item.favicon || '/placeholder-radio.jpg';
+        return item.favicon || fallback;
       case 'podcast':
-        return item.image || item.thumbnail || '/placeholder-podcast.jpg';
+        return item.image || item.thumbnail || fallback;
       case 'image':
-        return item.urls?.regular || item.src || '/placeholder-image.jpg';
+        return item.download_url || fallback;
       default:
-        return '/placeholder.jpg';
+        return fallback;
     }
   };
 
@@ -32,7 +33,7 @@ const ContentCard = ({ item, type, onPlay }) => {
       case 'podcast':
         return item.title;
       case 'image':
-        return item.alt_description || 'Image';
+        return item.author || 'Image';
       default:
         return 'Content';
     }
@@ -73,7 +74,7 @@ const ContentCard = ({ item, type, onPlay }) => {
             e.target.src = '/placeholder.jpg';
           }}
         />
-        {type !== 'image' && (
+        {type !== 'image' && onPlay && (
           <button
             onClick={() => onPlay(item)}
             className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"

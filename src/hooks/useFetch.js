@@ -23,7 +23,7 @@ const useFetch = (url, options = {}) => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, JSON.stringify(options)]); // Include options in dependency array
 
   return { data, loading, error };
 };
