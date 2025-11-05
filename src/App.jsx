@@ -1,13 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { PlayerProvider } from './contexts/PlayerContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Music from './pages/Music';
-import Videos from './pages/Videos';
-import Radio from './pages/Radio';
-import Podcasts from './pages/Podcasts';
-import Images from './pages/Images';
+import Page from './components/Page';
 
 function App() {
   return (
@@ -17,11 +13,8 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/music" element={<Music />} />
-              <Route path="/videos" element={<Videos />} />
-              <Route path="/radio" element={<Radio />} />
-              <Route path="/podcasts" element={<Podcasts />} />
-              <Route path="/images" element={<Images />} />
+              <Route path="/:type" element={<Page />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Layout>
         </Router>
