@@ -16,7 +16,7 @@ export const contentService = {
 
   // Music
   async fetchMusic(query = '', limit = 20) {
-    const url = `${API_ENDPOINTS.ITUNES_SEARCH}?term=${query || 'music'}&media=music&limit=${limit}`;
+    const url = `${API_ENDPOINTS.ITUNES_SEARCH}?term=${query || 'music'}&media=music&entity=song&limit=${limit}`;
     const data = await this._fetch(url, 'Error fetching music:');
     return data.results || [];
   },
